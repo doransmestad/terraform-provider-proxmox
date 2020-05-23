@@ -2,6 +2,7 @@ package proxmox
 
 import (
 	"fmt"
+	"json"
 	"log"
 	"math"
 	"path"
