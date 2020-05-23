@@ -28,6 +28,12 @@ jobs:
     - name: Build
       run: make build
 
+    - name: Upload build result as artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: bin
+        path: bin
+
     - name: Test
       run: make fmt vet test
 
