@@ -2,7 +2,6 @@ name: Test and Build
 
 on:
   push:
-    branches: [ master, doransmestad-githubactions ]
   pull_request:
     branches: [ master ]
 
