@@ -745,6 +745,9 @@ func resourceVmQemuUpdate(d *schema.ResourceData, meta interface{}) error {
 		config.QemuVga = qemuVgaList[0].(map[string]interface{})
 	}
 
+	bodyjson, _ := json.Marshal(config)
+	log.Printf("[DEBUG] Updating VM with the following configuration: %v", bodyjson)
+
 	err = config.UpdateConfig(vmr, client)
 	if err != nil {
 		pmParallelEnd(pconf)
