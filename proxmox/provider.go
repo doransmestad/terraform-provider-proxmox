@@ -20,7 +20,7 @@ type providerConfiguration struct {
 	Mutex           *sync.Mutex
 	Cond            *sync.Cond
 	LogFile         string
-	LogLevels	map[string]string
+	LogLevels       map[string]string
 }
 
 // Provider - Terrafrom properties for proxmox
@@ -83,7 +83,7 @@ func Provider() *schema.Provider {
 			"pm_log_file": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Default: "terraform-plugin-proxmox.log",
+				Default:  "terraform-plugin-proxmox.log",
 			},
 			"pm_otp": &pmOTPprompt,
 		},
@@ -133,8 +133,8 @@ func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 		MaxVMID:         -1,
 		Mutex:           &mut,
 		Cond:            sync.NewCond(&mut),
-		LogFile:	 d.Get("pm_log_file").(string),
-		LogLevels:	 logLevels,
+		LogFile:         d.Get("pm_log_file").(string),
+		LogLevels:       logLevels,
 	}, nil
 }
 

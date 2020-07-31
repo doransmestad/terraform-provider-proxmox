@@ -26,28 +26,27 @@ func resourceDataToFlatValues(d *schema.ResourceData, resource *schema.Resource)
 
 	for key, value := range resource.Schema {
 		switch value.Type {
-			case schema.TypeString:
-				flatValues[key] = d.Get(key).(string)
-			case schema.TypeBool:
-				flatValues[key] = d.Get(key).(bool)
-			case schema.TypeInt:
-				flatValues[key] = d.Get(key).(int)
-			case schema.TypeFloat:
-				flatValues[key] = d.Get(key).(float64)
-			case schema.TypeSet:
-				values, _ := schemaSetToFlatValues(d.Get(key).(*schema.Set), value.Elem.(*schema.Resource))
-				flatValues[key] = values
-			case schema.TypeList:
-				values, _ := schemaListToFlatValues(d.Get(key).([]interface{}), value.Elem.(*schema.Resource))
-				flatValues[key] = values
-			default:
-				flatValues[key] = "? Print Not Implemented ?"
+		case schema.TypeString:
+			flatValues[key] = d.Get(key).(string)
+		case schema.TypeBool:
+			flatValues[key] = d.Get(key).(bool)
+		case schema.TypeInt:
+			flatValues[key] = d.Get(key).(int)
+		case schema.TypeFloat:
+			flatValues[key] = d.Get(key).(float64)
+		case schema.TypeSet:
+			values, _ := schemaSetToFlatValues(d.Get(key).(*schema.Set), value.Elem.(*schema.Resource))
+			flatValues[key] = values
+		case schema.TypeList:
+			values, _ := schemaListToFlatValues(d.Get(key).([]interface{}), value.Elem.(*schema.Resource))
+			flatValues[key] = values
+		default:
+			flatValues[key] = "? Print Not Implemented ?"
 		}
 	}
 
 	return flatValues, nil
 }
-
 
 func schemaSetToFlatValues(set *schema.Set, resource *schema.Resource) ([]map[string]interface{}, error) {
 
@@ -59,16 +58,16 @@ func schemaSetToFlatValues(set *schema.Set, resource *schema.Resource) ([]map[st
 		setAsMap := set.(map[string]interface{})
 		for key, value := range resource.Schema {
 			switch value.Type {
-				case schema.TypeString:
-					innerFlatValues[key] = setAsMap[key].(string)
-				case schema.TypeBool:
-					innerFlatValues[key] = setAsMap[key].(bool)
-				case schema.TypeInt:
-					innerFlatValues[key] = setAsMap[key].(int)
-				case schema.TypeFloat:
-					innerFlatValues[key] = setAsMap[key].(float64)
-				default:
-					innerFlatValues[key] = "? Print Not Implemented ?"
+			case schema.TypeString:
+				innerFlatValues[key] = setAsMap[key].(string)
+			case schema.TypeBool:
+				innerFlatValues[key] = setAsMap[key].(bool)
+			case schema.TypeInt:
+				innerFlatValues[key] = setAsMap[key].(int)
+			case schema.TypeFloat:
+				innerFlatValues[key] = setAsMap[key].(float64)
+			default:
+				innerFlatValues[key] = "? Print Not Implemented ?"
 			}
 		}
 
@@ -87,16 +86,16 @@ func schemaListToFlatValues(schemaList []interface{}, resource *schema.Resource)
 		itemAsMap := item.(map[string]interface{})
 		for key, value := range resource.Schema {
 			switch value.Type {
-				case schema.TypeString:
-					innerFlatValues[key] = itemAsMap[key].(string)
-				case schema.TypeBool:
-					innerFlatValues[key] = itemAsMap[key].(bool)
-				case schema.TypeInt:
-					innerFlatValues[key] = itemAsMap[key].(int)
-				case schema.TypeFloat:
-					innerFlatValues[key] = itemAsMap[key].(float64)
-				default:
-					innerFlatValues[key] = "? Print Not Implemented ?"
+			case schema.TypeString:
+				innerFlatValues[key] = itemAsMap[key].(string)
+			case schema.TypeBool:
+				innerFlatValues[key] = itemAsMap[key].(bool)
+			case schema.TypeInt:
+				innerFlatValues[key] = itemAsMap[key].(int)
+			case schema.TypeFloat:
+				innerFlatValues[key] = itemAsMap[key].(float64)
+			default:
+				innerFlatValues[key] = "? Print Not Implemented ?"
 			}
 		}
 
@@ -104,8 +103,6 @@ func schemaListToFlatValues(schemaList []interface{}, resource *schema.Resource)
 	}
 	return flatValues, nil
 }
-
-
 
 func resourceVmQemu() *schema.Resource {
 
@@ -120,19 +117,20 @@ func resourceVmQemu() *schema.Resource {
 		},
 
 		Schema: map[string]*schema.Schema{
-		    "vmid": {
-                Type:	  schema.TypeInt,
-                Optional: true,
-                Default:  0,
-            },
+			"vmid": {
+				Type:     schema.TypeInt,
+				Optional: true,
+				Computed: true,
+				ForceNew: true,
+			},
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
 			},
-			"define_connection_info": {  // by default define SSH for provisioner info
+			"define_connection_info": { // by default define SSH for provisioner info
 				Type:     schema.TypeBool,
 				Optional: true,
-				Default: true,
+				Default:  true,
 			},
 			"desc": {
 				Type:     schema.TypeString,
@@ -417,7 +415,7 @@ func resourceVmQemu() *schema.Resource {
 							Type:     schema.TypeString,
 							Optional: true,
 						},
-						"discard": &schema.Schema{
+						"media": &schema.Schema{
 							Type:     schema.TypeString,
 							Optional: true,
 						},
@@ -552,8 +550,8 @@ func resourceVmQemu() *schema.Resource {
 				Optional: true,
 			},
 			"cipassword": {
-				Type:     schema.TypeString,
-				Optional: true,
+				Type:      schema.TypeString,
+				Optional:  true,
 				Sensitive: true,
 				DiffSuppressFunc: func(k, old, new string, d *schema.ResourceData) bool {
 					if new == "**********" {
@@ -570,12 +568,12 @@ func resourceVmQemu() *schema.Resource {
 			"searchdomain": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,   // could be pre-existing if we clone from a template with it defined
+				Computed: true, // could be pre-existing if we clone from a template with it defined
 			},
 			"nameserver": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Computed: true,   // could be pre-existing if we clone from a template with it defined
+				Computed: true, // could be pre-existing if we clone from a template with it defined
 			},
 			"sshkeys": {
 				Type:     schema.TypeString,
@@ -622,7 +620,6 @@ func resourceVmQemu() *schema.Resource {
 				Optional: true,
 				ForceNew: true,
 			},
-
 		},
 	}
 	return thisResource
@@ -638,7 +635,7 @@ func resourceVmQemuCreate(d *schema.ResourceData, meta interface{}) error {
 	// DEBUG print out the create request
 	flatValue, _ := resourceDataToFlatValues(d, thisResource)
 	jsonString, _ := json.Marshal(flatValue)
-	logger.Debug().Str("vmid", d.Id()).Msgf("Invoking VM create with Id '%v' and resource data:  '%+v'", string(jsonString))
+	logger.Debug().Str("vmid", d.Id()).Msgf("Invoking VM create with resource data:  '%+v'", string(jsonString))
 
 	pconf := meta.(*providerConfiguration)
 	pmParallelBegin(pconf)
@@ -720,14 +717,14 @@ func resourceVmQemuCreate(d *schema.ResourceData, meta interface{}) error {
 		// get unique id
 		nextid, err := nextVmId(pconf)
 		vmID := d.Get("vmid").(int)
-        if vmID != 0 {
-            nextid = vmID
-        } else {
-            if err != nil {
-                pmParallelEnd(pconf)
-                return err
-            }
-        }
+		if vmID != 0 { // 0 is the "no value" for int in golang
+			nextid = vmID
+		} else {
+			if err != nil {
+				pmParallelEnd(pconf)
+				return err
+			}
+		}
 
 		vmr = pxapi.NewVmRef(nextid)
 		vmr.SetNode(targetNode)
@@ -968,7 +965,6 @@ func resourceVmQemuRead(d *schema.ResourceData, meta interface{}) error {
 		d.SetId("")
 		return fmt.Errorf("Unexpected error when trying to read and parse the resource: %v", err)
 	}
-
 
 	// create a logger for this function
 	logger, _ := CreateSubLogger("resource_vm_read")
@@ -1226,7 +1222,6 @@ func FlattenDevicesList(proxmoxDevices pxapi.QemuDevices) ([]map[string]interfac
 	return flattenedDevices, nil
 }
 
-
 // Consumes a terraform TypeList of a Qemu Device (network, hard drive, etc) and returns the "Expanded"
 // version of the equivalent configuration that the API understands (the struct pxapi.QemuDevices).
 // NOTE this expects the provided deviceList to be []map[string]interface{}.
@@ -1259,8 +1254,6 @@ func ExpandDevicesList(deviceList []interface{}) (pxapi.QemuDevices, error) {
 
 	return expandedDevices, nil
 }
-
-
 
 // Update schema.TypeSet with new values comes from Proxmox API.
 // TODO: remove these set functions and convert attributes using a set to a list instead.
@@ -1363,12 +1356,12 @@ func initConnInfo(
 					guestAgentSupported = true
 				}
 				// wait until the os has started the guest agent
-				for end := time.Now().Add(60 * time.Second); guestAgentSupported ; {
+				for end := time.Now().Add(60 * time.Second); guestAgentSupported; {
 					_, err := client.GetVmAgentNetworkInterfaces(vmr)
 					if err == nil {
 						guestAgentRunning = true
 						break
-					} else if ! strings.Contains(err.Error(), "QEMU guest agent is not running") {
+					} else if !strings.Contains(err.Error(), "QEMU guest agent is not running") {
 						// "not running" means either not installed or not started yet.
 						// any other error should not happen here
 						return err
@@ -1440,5 +1433,3 @@ func initConnInfo(
 	})
 	return nil
 }
-
-
